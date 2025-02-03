@@ -17,20 +17,21 @@ export default function Resources() {
   const [openNew, setOpenNew] = useState(false)
   const [resource, setResource] = useState()
   const { setLoading, setBarOptions, loading } = useAppStore((state) => state)
-  const [resources, setResources] = useState([])
-  const user = useAuthStore(state=>state.user)
+  const [resources, setResources] = useState()
+  const user = useAuthStore((state) => state.user)
 
   useEffect(() => {
     const fetchUnidades = async () => {
-      setLoading(true)
       try {
         const resources = await getResources()
         setResources(resources.data)
       } catch (error) {
-        if(error.code==="ERR_NETWORK") setBarOptions({message: "Error de Conexión", color: 'red'})
-        else setBarOptions({message: error.response.data.mensaje, color: 'red'})
-      } finally {
-        setLoading(false)
+        if (error.code === 'ERR_NETWORK')
+          setBarOptions({ message: 'Error de Conexión', color: 'red' })
+        else
+          setBarOptions({ message: error.response.data.mensaje, color: 'red' })
+
+        setResources([])
       }
     }
 
@@ -56,7 +57,12 @@ export default function Resources() {
       headerAlign: 'center',
       disableColumnMenu: true,
     },
-    { field: 'nombreTipo', type: 'string', headerName: 'Tipo de recurso', flex: 0.7 },
+    {
+      field: 'nombreTipo',
+      type: 'string',
+      headerName: 'Tipo de recurso',
+      flex: 0.7,
+    },
     { field: 'nombre', type: 'string', headerName: 'Nombre', flex: 0.7 },
     {
       field: 'caracteristicas',
@@ -72,20 +78,22 @@ export default function Resources() {
       flex: 0.3,
       getActions: ({ id, row }) => {
         return [
-          <Button
-            onClick={() => {
-              setResource(row)
-              setOpen(true)
-            }}
-            className='p-2'
-            variant='text'
-          >
-            <ClockCheckIcon />
-          </Button>,
+          <>
+            <Button
+              onClick={() => {
+                setResource(row)
+                setOpen(true)
+              }}
+              className='p-2'
+              variant='text'
+            >
+              <ClockCheckIcon />
+            </Button>
+          </>,
         ]
       },
     },
-  ].filter(f=>!f.hide)
+  ].filter((f) => !f.hide)
 
   return (
     <>
@@ -96,7 +104,7 @@ export default function Resources() {
           columns={columns}
           rows={resources}
           getRowId={(row) => row.id}
-          loading={loading}
+          loading={typeof resources == 'undefined'}
           getRowHeight={() => 'auto'}
           initialState={{
             pagination: {
@@ -116,20 +124,23 @@ export default function Resources() {
       </div>
 
       <Dialog open={open} handler={() => setOpen((prev) => !prev)}>
-        <DialogHeader className='justify-center'>
-          Reserva
-        </DialogHeader>
+        <DialogHeader className='justify-center'>Reserva</DialogHeader>
         <div className='p-8 pt-4'>
-          <NewReservation resource={resource}/>
+          <NewReservation resource={resource} setOpen={setOpen} />
         </div>
       </Dialog>
 
-      <Dialog className='overflow-hidden' size='xl' open={openNew} handler={() => setOpenNew((prev) => !prev)}>
+      <Dialog
+        className='overflow-hidden'
+        size='xl'
+        open={openNew}
+        handler={() => setOpenNew((prev) => !prev)}
+      >
         <DialogHeader className='justify-center bg-gray-300'>
           Nuevo Tipo de Recurso
         </DialogHeader>
         <div className='p-8 pt-4'>
-          <NewResourceType setResources={setResources} setOpen={setOpenNew}/>
+          <NewResourceType setResources={setResources} setOpen={setOpenNew} />
         </div>
       </Dialog>
     </>

@@ -15,19 +15,20 @@ export default function ResourceTypes() {
   const [openNew, setOpenNew] = useState(false)
   const [horary, setHorary] = useState()
   const { setLoading, setBarOptions, loading } = useAppStore((state) => state)
-  const [tipos, setTipos] = useState([])
+  const [tipos, setTipos] = useState()
 
   useEffect(() => {
     const fetchUnidades = async () => {
-      setLoading(true)
       try {
         const tipos = await getTypes()
         setTipos(tipos.data)
       } catch (error) {
-        if(error.code==="ERR_NETWORK") setBarOptions({message: "Error de Conexión", color: 'red'})
-        else setBarOptions({message: error.response.data.mensaje, color: 'red'})
-      } finally {
-        setLoading(false)
+        if (error.code === 'ERR_NETWORK')
+          setBarOptions({ message: 'Error de Conexión', color: 'red' })
+        else
+          setBarOptions({ message: error.response.data.mensaje, color: 'red' })
+
+          setTipos([])
       }
     }
 
@@ -65,16 +66,18 @@ export default function ResourceTypes() {
       flex: 0.3,
       getActions: ({ id, row }) => {
         return [
-          <Button
-            onClick={() => {
-              setHorary(JSON.parse(row.horarioDisponibilidad))
-              setOpen(true)
-            }}
-            className='p-2'
-            variant='text'
-          >
-            <CalendarIcon />
-          </Button>,
+          <>
+            <Button
+              onClick={() => {
+                setHorary(JSON.parse(row.horarioDisponibilidad))
+                setOpen(true)
+              }}
+              className='p-2'
+              variant='text'
+            >
+              <CalendarIcon />
+            </Button>
+          </>,
         ]
       },
     },
@@ -89,7 +92,7 @@ export default function ResourceTypes() {
           columns={columns}
           rows={tipos}
           getRowId={(row) => row.id}
-          loading={loading}
+          loading={typeof tipos == 'undefined'}
           getRowHeight={() => 'auto'}
           initialState={{
             pagination: {
@@ -117,12 +120,17 @@ export default function ResourceTypes() {
         </div>
       </Dialog>
 
-      <Dialog className='overflow-hidden' size='xl' open={openNew} handler={() => setOpenNew((prev) => !prev)}>
+      <Dialog
+        className='overflow-hidden'
+        size='xl'
+        open={openNew}
+        handler={() => setOpenNew((prev) => !prev)}
+      >
         <DialogHeader className='justify-center bg-gray-300'>
           Nuevo Tipo de Recurso
         </DialogHeader>
         <div className='p-8 pt-4'>
-          <NewResourceType setTipos={setTipos} setOpen={setOpenNew}/>
+          <NewResourceType setTipos={setTipos} setOpen={setOpenNew} />
         </div>
       </Dialog>
     </>

@@ -14,20 +14,21 @@ export default function ServiceUnits() {
   const [open, setOpen] = useState(false)
   const [horary, setHorary] = useState()
   const { setLoading, setBarOptions, loading } = useAppStore((state) => state)
-  const [unidades, setUnidades] = useState([])
-  const user = useAuthStore(state=>state.user)
+  const [unidades, setUnidades] = useState()
+  const user = useAuthStore((state) => state.user)
 
   useEffect(() => {
     const fetchUnidades = async () => {
-      setLoading(true)
       try {
         const unidades = await getUnits()
         setUnidades(unidades.data)
       } catch (error) {
-        if(error.code==="ERR_NETWORK") setBarOptions({message: "Error de Conexión", color: 'red'})
-        else setBarOptions({message: error.response.data.mensaje, color: 'red'})
-      } finally {
-        setLoading(false)
+        if (error.code === 'ERR_NETWORK')
+          setBarOptions({ message: 'Error de Conexión', color: 'red' })
+        else
+          setBarOptions({ message: error.response.data.mensaje, color: 'red' })
+
+          setUnidades([])
       }
     }
 
@@ -58,22 +59,24 @@ export default function ServiceUnits() {
       flex: 0.3,
       getActions: ({ id, row }) => {
         return [
-          <Button
-            onClick={() => {
-              setHorary(JSON.parse(row.horarioDisponibilidad))
-              setOpen(true)
-            }}
-            className='p-2'
-            variant='text'
-          >
-            <CalendarIcon />
-          </Button>,
+          <>
+            <Button
+              onClick={() => {
+                setHorary(JSON.parse(row.horarioDisponibilidad))
+                setOpen(true)
+              }}
+              className='p-2'
+              variant='text'
+            >
+              <CalendarIcon />
+            </Button>
+          </>,
         ]
       },
     },
   ]
 
-  if(!user.admin) return <Navigate to={'/'}/>
+  if (!user.admin) return <Navigate to={'/'} />
 
   return (
     <>
@@ -83,7 +86,7 @@ export default function ServiceUnits() {
           columns={columns}
           rows={unidades}
           getRowId={(row) => row.id}
-          loading={loading}
+          loading={typeof unidades == 'undefined'}
           getRowHeight={() => 'auto'}
           initialState={{
             pagination: {
@@ -102,7 +105,9 @@ export default function ServiceUnits() {
         />
       </div>
       <Dialog size='lg' open={open} handler={() => setOpen((prev) => !prev)}>
-        <DialogHeader className='justify-center'>Horario de Disponibilidad</DialogHeader>
+        <DialogHeader className='justify-center'>
+          Horario de Disponibilidad
+        </DialogHeader>
         <div className='px-4 pb-4'>
           <TimeTable horary={horary} />
         </div>
