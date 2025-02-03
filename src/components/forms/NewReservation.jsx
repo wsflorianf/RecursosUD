@@ -1,11 +1,16 @@
-import { Typography } from '@material-tailwind/react'
 import { Button } from '@material-tailwind/react'
 import { Input } from '@material-tailwind/react'
 import { useForm } from 'react-hook-form'
 import InputMessage from '../InputMessage'
 import { days } from '@/utils/utils'
+import { createReservation } from '@/api/reservations'
+import { useAuthStore } from '@/store/authStore'
+import useAppStore from '@/store/appStore'
 
-export default function NewReservation({ resource }) {
+export default function NewReservation({ resource, setOpen }) {
+  const user = useAuthStore((state) => state.user)
+  const { setLoading, setBarOptions } = useAppStore((state) => state)
+
   const {
     register,
     handleSubmit,
@@ -36,7 +41,31 @@ export default function NewReservation({ resource }) {
     return unitHorary[keys[day - 1]]
   }
 
-  const onSubmit = async (data) => {}
+  const onSubmit = async (data) => {
+    setLoading(true)
+    try {
+      data.userId = user.id
+      data.resourceId = resource.id
+      data.start = data.start + ':00'
+      data.end = data.end + ':00'
+      console.log(data)
+
+      await createReservation(data)
+
+      setBarOptions({
+        message: '¡Reserva realizada con éxito!',
+        color: 'green',
+      })
+      setOpen(false)
+    } catch (e) {
+      if (error.code === 'ERR_NETWORK') setError('Error de Conexión')
+      else if (error.response?.data?.mensaje)
+        setError(error.response.data.mensaje)
+      else console.log(error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -65,7 +94,7 @@ export default function NewReservation({ resource }) {
             required: { value: true, message: 'Este campo es obligatirio.' },
           })}
         />
-        {errors.date && <InputMessage message={errors.date.message} error/>}
+        {errors.date && <InputMessage message={errors.date.message} error />}
         <p className='font-bold text-lg'>Hora: </p>
         <div className='flex gap-8'>
           <Input
