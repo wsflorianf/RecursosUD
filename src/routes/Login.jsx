@@ -34,7 +34,7 @@ function Login() {
       }
     } catch (error) {
       if(error.code==="ERR_NETWORK") setBarOptions({message: "Error de Conexión", color: 'red'})
-      else setBarOptions({message: error.response.data.mensaje, color: 'red'})
+      else setBarOptions({message: error.response.data.message, color: 'red'})
     }finally{
       setLoading(false)
     }

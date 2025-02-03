@@ -23,7 +23,7 @@ export default function NewResourceType({ setTipos, setOpen }) {
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm({mode: 'onChange'})
+  } = useForm({ mode: 'onChange' })
 
   useEffect(() => {
     const fetchUnidades = async () => {
@@ -32,7 +32,9 @@ export default function NewResourceType({ setTipos, setOpen }) {
         const unidades = await getUnits()
         setUnidades(unidades.data)
       } catch (error) {
-        if (error.code === 'ERR_NETWORK') setBarOptions({message: 'Error de Conexión', color: 'red'})
+        if (error.code === 'ERR_NETWORK') setBarOptions('Error de Conexión')
+        else if (error.response?.data?.message)
+          setBarOptions(error.response.data.message)
         else console.log(error)
       } finally {
         setLoading(false)
@@ -61,16 +63,17 @@ export default function NewResourceType({ setTipos, setOpen }) {
       data.horary = JSON.stringify(horario)
 
       const response = await createType(data)
-      setBarOptions({message: "Tipo de recurso creado con éxito.", color: 'green'})
-      setTipos(prev=>[...prev, response.data])
+      setBarOptions({
+        message: 'Tipo de recurso creado con éxito.',
+        color: 'green',
+      })
+      setTipos((prev) => [...prev, response.data])
       setOpen(false)
-
     } catch (error) {
-
       if (error.code === 'ERR_NETWORK') setError('Error de Conexión')
-      else if (error.response?.data?.mensaje) setError(error.response.data.mensaje)
+      else if (error.response?.data?.message)
+        setError(error.response.data.message)
       else console.log(error)
-
     } finally {
       setLoading(false)
     }
@@ -96,7 +99,7 @@ export default function NewResourceType({ setTipos, setOpen }) {
             },
           })}
         />
-        {errors.name && <InputMessage message={errors.name.message} error/>}
+        {errors.name && <InputMessage message={errors.name.message} error />}
         <Controller
           control={control}
           name='idUnit'
@@ -130,7 +133,9 @@ export default function NewResourceType({ setTipos, setOpen }) {
           )}
         />
 
-        {errors.idUnit && <InputMessage message={errors.idUnit.message} error/>}
+        {errors.idUnit && (
+          <InputMessage message={errors.idUnit.message} error />
+        )}
         <Textarea
           resize={true}
           label='Descripción'
@@ -181,9 +186,9 @@ export default function NewResourceType({ setTipos, setOpen }) {
                       value: true,
                       message: 'Hora fin obligatoria',
                     },
-                    validate: (val)=>{
-                      if(val<watch(key + '_start')){
-                        return "Hora fin debe ser mayor."
+                    validate: (val) => {
+                      if (val < watch(key + '_start')) {
+                        return 'Hora fin debe ser mayor.'
                       }
                     },
                     max: {
@@ -199,10 +204,13 @@ export default function NewResourceType({ setTipos, setOpen }) {
                   })}
                 />
                 {errors[key + '_start'] && (
-                  <InputMessage message={errors[key + '_start'].message} error/>
+                  <InputMessage
+                    message={errors[key + '_start'].message}
+                    error
+                  />
                 )}
                 {errors[key + '_end'] && (
-                  <InputMessage message={errors[key + '_end'].message} error/>
+                  <InputMessage message={errors[key + '_end'].message} error />
                 )}
               </div>
             )

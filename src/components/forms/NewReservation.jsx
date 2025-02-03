@@ -57,10 +57,9 @@ export default function NewReservation({ resource, setOpen }) {
         color: 'green',
       })
       setOpen(false)
-    } catch (e) {
-      if (error.code === 'ERR_NETWORK') setError('Error de Conexión')
-      else if (error.response?.data?.mensaje)
-        setError(error.response.data.mensaje)
+    } catch (error) {
+      if (error.code === 'ERR_NETWORK') setBarOptions({message: 'Error de Conexión', color: 'red'})
+      else if (error.response?.data?.message) setBarOptions({message: error.response.data.message, color: 'red'})
       else console.log(error)
     } finally {
       setLoading(false)

@@ -60,8 +60,8 @@ export default function NewResource({ setTipos, setOpen }) {
       setOpen(false)
     } catch (error) {
       console.log(error)
-      if (error.code === 'ERR_NETWORK') setError('Error de Conexión')
-      else if (error.response?.data?.mensaje) setError(error.response.data.mensaje)
+      if (error.code === 'ERR_NETWORK') setBarOptions('Error de Conexión')
+      else if (error.response?.data?.message) setBarOptions(error.response.data.message)
       else console.log(error)
     } finally {
       setLoading(false)

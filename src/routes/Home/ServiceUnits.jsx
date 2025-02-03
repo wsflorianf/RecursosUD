@@ -26,7 +26,7 @@ export default function ServiceUnits() {
         if (error.code === 'ERR_NETWORK')
           setBarOptions({ message: 'Error de Conexión', color: 'red' })
         else
-          setBarOptions({ message: error.response.data.mensaje, color: 'red' })
+          setBarOptions({ message: error.response.data.message, color: 'red' })
 
           setUnidades([])
       }

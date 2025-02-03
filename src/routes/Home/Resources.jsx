@@ -29,7 +29,7 @@ export default function Resources() {
         if (error.code === 'ERR_NETWORK')
           setBarOptions({ message: 'Error de Conexión', color: 'red' })
         else
-          setBarOptions({ message: error.response.data.mensaje, color: 'red' })
+          setBarOptions({ message: error.response.data.message, color: 'red' })
 
         setResources([])
       }

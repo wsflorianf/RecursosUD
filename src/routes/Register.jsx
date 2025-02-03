@@ -33,7 +33,7 @@ function Register() {
       }
     } catch (error) {
       if(error.code==="ERR_NETWORK") setBarOptions({message: "Error de Conexión", color: 'red'})
-      else setbarOptions({message: error.response.data.mensaje, color: 'red'})
+      else setbarOptions({message: error.response.data.message, color: 'red'})
     } finally {
       setLoading(false)
     }
