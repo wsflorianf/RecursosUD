@@ -11,6 +11,7 @@ import { useAuthStore } from '@/store/authStore'
 import { getResources } from '@/api/resources'
 import NewReservation from '@/components/forms/NewReservation'
 import ClockCheckIcon from '@/assets/icons/ClockCheckIcon'
+import BellPlusIcon from '@/assets/icons/BellPlusIcon'
 
 export default function Resources() {
   const [open, setOpen] = useState(false)
@@ -87,7 +88,7 @@ export default function Resources() {
               className='p-2'
               variant='text'
             >
-              <ClockCheckIcon />
+              <BellPlusIcon />
             </Button>
           </>,
         ]
