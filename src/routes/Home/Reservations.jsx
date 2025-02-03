@@ -73,7 +73,7 @@ export default function Reservations() {
       align: 'center',
       headerAlign: 'center',
       valueGetter: (value) => {
-        return new Date(value)
+        return new Date(value+'T00:00:00')
       },
       headerName: 'Fecha',
       flex: 0.5,
