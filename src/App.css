@@ -1,0 +1,68 @@
+*{
+  box-sizing: border-box;
+}
+
+body {
+  background: linear-gradient(30deg, #5e5e5e, #0a1034, #1a1a1a, #5e5e5e);
+  background-size: 400% 400%;
+  animation: gradientAnimation 30s infinite linear; 
+}
+
+svg{
+  height: 100%;
+  width: 100%;
+}
+
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+
+/* HTML: <div class="loader"></div> */
+.loader {
+    width: 80px;
+    aspect-ratio: 1;
+    background: 
+      radial-gradient(farthest-side at top,#0000 calc(100% - 21px),lightblue calc(100% - 20px) 99%,#0000) bottom/100% 50%,
+      radial-gradient(farthest-side,lightblue 94%,#0000 ) left /20px 20px,
+      radial-gradient(farthest-side,lightblue 94%,#0000 ) right/20px 20px;
+    background-repeat: no-repeat;
+    position: relative;
+  }
+  .loader::before {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    inset: auto 0 0;
+    margin: auto;
+    border-radius: 50%;
+    background: rgb(211, 161, 11);
+    transform-origin: 50% -20px;
+    animation: l14 1s infinite cubic-bezier(0.5,623,0.5,-623);
+  }
+
+  .loader::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    inset: auto 0 0;
+    margin: auto;
+    border-radius: 50%;
+    background: rgb(8, 13, 98);
+    transform-origin: 50% -20px;
+    animation: l14 1s infinite cubic-bezier(0.5,623,0.5,-623);
+  }
+  
+  @keyframes l14 { 
+   100% {transform: rotate(0.5deg)}
+  }
